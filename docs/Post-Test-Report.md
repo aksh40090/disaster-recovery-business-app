@@ -1,99 +1,61 @@
-# Disaster Recovery Post-Test Report
+# Post-Test Failover Report
 
 ## 1. Test Overview
 
-This report documents the Disaster Recovery failover test performed for the business-critical application.
+A controlled disaster recovery failover test was performed for the Business Inventory Application.
 
-The purpose of the test is to verify that the application can recover in the secondary region after a simulated failure of the primary region.
+The objective was to verify that the application could recover from a simulated primary-region failure by switching to the secondary recovery environment.
 
-## 2. Test Objectives
-
-- Verify application availability before the test.
-- Simulate a failure of the primary environment.
-- Verify failover to the secondary region.
-- Confirm application recovery.
-- Verify data availability and integrity.
-- Measure the actual Recovery Time Objective (RTO).
-
-## 3. Recovery Targets
-
-| Metric | Target |
-|---|---:|
-| RPO | 15 minutes |
-| RTO | 10 minutes |
-
-## 4. Test Environment
+## 2. Test Environment
 
 ### Primary Region
-
-To be documented after implementation.
+- URL: http://localhost:3000
+- Status before failure: Healthy
+- Region: Primary Region
 
 ### Secondary Region
+- URL: http://localhost:3001
+- Status: Healthy
+- Region: Secondary Region
 
-To be documented after implementation.
+## 3. Failover Procedure
 
-### Application
+1. Started the application in the Primary Region on port 3000.
+2. Verified application health using the `/health` endpoint.
+3. Verified that the inventory application was accessible.
+4. Started the recovery environment on port 3001.
+5. Verified that the Secondary Region was healthy.
+6. Stopped the Primary Region application to simulate a failure.
+7. Switched application access to the Secondary Region.
+8. Verified that the application was accessible from the Secondary Region.
 
-Business-critical sample application.
+## 4. Failover Result
 
-### DR Strategy
+The failover test was successful.
 
-Pilot Light.
+After the simulated failure of the Primary Region, the application was successfully accessed through the Secondary Region.
 
-## 5. Failover Procedure
+The secondary application displayed:
 
-1. Verify that the application is running in the primary region.
-2. Record the starting time.
-3. Simulate failure of the primary environment.
-4. Initiate or verify DNS failover.
-5. Activate/recover the application in the secondary region.
-6. Verify application availability.
-7. Verify data availability.
-8. Record the recovery completion time.
-9. Calculate the actual RTO.
-10. Compare the actual RTO with the target RTO.
+**Status: HEALTHY | Region: Secondary Region**
 
-## 6. Test Results
+## 5. RPO and RTO
 
-| Measurement | Result |
-|---|---|
-| Failure start time | To be recorded |
-| Recovery completion time | To be recorded |
-| Actual RTO | To be calculated |
-| Target RTO | 10 minutes |
-| RTO Status | To be determined |
-| Data loss / RPO result | To be determined |
+| Metric | Target | Result |
+|---|---:|---|
+| RPO | 15 minutes | Not measured in this local simulation |
+| RTO | 10 minutes | Successful recovery; exact elapsed time not formally timed |
 
-## 7. Evidence
+## 6. Limitations
 
-The following evidence will be added after the actual test:
+This test is a local disaster recovery simulation using two application instances on different ports.
 
-- Screenshot/video of the application running in the primary region.
-- Evidence of the simulated failure.
-- Evidence of failover.
-- Screenshot/video showing application recovery in the secondary region.
-- Timestamps used for calculating the actual RTO.
+It demonstrates the failover concept and application recovery process but does not represent a physical cross-cloud-region failure.
 
-## 8. RTO Analysis
+A production implementation would use cloud-based cross-region replication, automated backups, DNS failover, monitoring, and automated recovery.
 
-Actual RTO:
+## 7. Conclusion
 
-**To be measured during the real failover test.**
+The simulated disaster recovery test successfully demonstrated recovery of the business-critical application from a Primary Region failure to a Secondary Region.
 
-Comparison:
-
-**Target RTO:** 10 minutes
-
-**Actual RTO:** To be measured
-
-The test will be considered successful if the actual recovery time meets the defined target.
-
-## 9. Issues and Observations
-
-Any problems encountered during the failover test will be documented here.
-
-## 10. Conclusion
-
-The Disaster Recovery solution will be evaluated based on the results of the real failover test.
-
-The final report will document whether the target RTO and RPO were achieved and will explain any limitations or improvements identified during testing.
+The Pilot Light strategy provides a practical balance between recovery capability, cost, and operational complexity.
