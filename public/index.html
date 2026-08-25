@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Business Inventory Application</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 30px;
+            background: #f4f6f8;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: auto;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        .status {
+            padding: 12px;
+            margin: 20px 0;
+            background: #e8f5e9;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        form {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        input {
+            padding: 10px;
+            margin: 5px;
+            width: 180px;
+        }
+
+        button {
+            padding: 10px 18px;
+            margin: 5px;
+            cursor: pointer;
+        }
+
+        table {
+            width: 100%;
+            background: white;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 12px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+
+        th {
+            background: #eeeeee;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>Business Inventory Application</h1>
+
+    <div class="status" id="status">
+        Checking application status...
+    </div>
+
+    <form id="productForm">
+        <h2>Add Product</h2>
+
+        <input
+            type="text"
+            id="name"
+            placeholder="Product Name"
+            required
+        >
+
+        <input
+            type="number"
+            id="quantity"
+            placeholder="Quantity"
+            required
+        >
+
+        <input
+            type="number"
+            id="price"
+            placeholder="Price"
+            required
+        >
+
+        <button type="submit">Add Product</button>
+    </form>
+
+    <h2>Inventory</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Product</th>
+                <th>Quantity</th>
+                <th>Price</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+
+        <tbody id="productList"></tbody>
+    </table>
+
+</div>
+
+<script>
+
+async function checkHealth() {
+    try {
+        const response = await fetch("/health");
+        const data = await response.json();
+
+        document.getElementById("status").innerHTML =
+            `Status: ${data.status.toUpperCase()} | Region: ${data.region}`;
+
+    } catch (error) {
+        document.getElementById("status").innerHTML =
+            "Application unavailable";
+    }
+}
+
+async function loadProducts() {
+
+    const response = await fetch("/api/products");
+    const products = await response.json();
+
+    const list = document.getElementById("productList");
+
+    list.innerHTML = "";
+
+    products.forEach(product => {
+
+        const row = document.createElement("tr");
+
+        row.innerHTML = `
+            <td>${product.id}</td>
+            <td>${product.name}</td>
+            <td>${product.quantity}</td>
+            <td>₹${product.price}</td>
+            <td>
+                <button onclick="deleteProduct(${product.id})">
+                    Delete
+                </button>
+            </td>
+        `;
+
+        list.appendChild(row);
+    });
+}
+
+document.getElementById("productForm").addEventListener("submit", async function(event) {
+
+    event.preventDefault();
+
+    const product = {
+        name: document.getElementById("name").value,
+        quantity: document.getElementById("quantity").value,
+        price: document.getElementById("price").value
+    };
+
+    await fetch("/api/products", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(product)
+    });
+
+    this.reset();
+
+    loadProducts();
+});
+
+async function deleteProduct(id) {
+
+    await fetch(`/api/products/${id}`, {
+        method: "DELETE"
+    });
+
+    loadProducts();
+}
+
+checkHealth();
+loadProducts();
+
+</script>
+
+</body>
+</html>
