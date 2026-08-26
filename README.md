@@ -120,3 +120,28 @@ disaster-recovery-business-app/
 ├── failover-evidence/
 ├── reports/
 └── docs/
+
+
+## Rollback Mechanism
+
+Each microservice is deployed independently through its own GitHub Actions CI/CD pipeline.
+
+If a deployment fails or introduces an issue, the previous stable Git commit can be redeployed using the same service-specific pipeline.
+
+The rollback process is:
+
+1. Identify the failed deployment.
+2. Identify the last known stable commit.
+3. Revert the problematic change using Git.
+4. Push the revert commit to the `main` branch.
+5. The affected service's GitHub Actions pipeline runs again.
+6. Automated tests are executed before deployment.
+7. If the tests pass, the previous stable version is redeployed.
+
+Because the pipelines are independently triggered based on service directories, rolling back one service does not require redeploying the other service.
+
+### Rollback Strategy
+
+The project uses **Git-based rollback**. Git provides version history, allowing a previous stable version of a microservice to be restored when required.
+
+This approach is simple, auditable, and suitable for the demonstration project without requiring paid cloud infrastructure.
