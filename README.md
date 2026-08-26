@@ -121,6 +121,21 @@ disaster-recovery-business-app/
 ├── reports/
 └── docs/
 
+## CI/CD Pipeline
+
+The application is divided into two independent microservices:
+
+- **Product Service**
+- **Order Service**
+
+Each service has its own GitHub Actions workflow:
+
+- `product-service.yml`
+- `order-service.yml`
+
+Each pipeline performs automated testing and deployment independently.
+
+A change to the Product Service triggers only the Product Service pipeline, while a change to the Order Service triggers only the Order Service pipeline.
 
 ## Rollback Mechanism
 
