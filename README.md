@@ -202,4 +202,48 @@ This project demonstrates two important cloud engineering concepts:
 2. **Independent CI/CD pipelines** for a microservices application using GitHub Actions and Docker.
 
 The implementation provides a practical demonstration of recovery, automation, testing, independent deployments, and Git-based rollback.
+# Legacy Monolith – Containerization and Kubernetes Deployment
 
+## 📌 Project Overview
+
+This project demonstrates the containerization and Kubernetes orchestration of a legacy monolithic application.
+
+The application is packaged into a Docker container and deployed on Kubernetes using multiple replicas. A Kubernetes Service is used to distribute traffic between pods, while a RollingUpdate strategy enables application updates with minimal service interruption.
+
+The project also demonstrates a version update from **v1 to v2** using Kubernetes rolling deployment.
+
+---
+
+## 🎯 Objectives
+
+- Containerize a legacy monolithic application using Docker.
+- Build and run the application as a Docker image.
+- Deploy the application on Kubernetes.
+- Run multiple replicas for availability.
+- Expose the application using a Kubernetes Service.
+- Configure readiness and liveness probes.
+- Perform a RollingUpdate from v1 to v2.
+- Demonstrate continuous successful requests during deployment.
+- Analyze the possibility of migrating the monolith to microservices.
+
+---
+
+## 🏗️ Project Architecture
+
+```text
+                    Client / Browser
+                           |
+                           v
+             Kubernetes Service
+             legacy-monolith-service
+                           |
+                 -------------------
+                 |                 |
+                 v                 v
+          Legacy Monolith     Legacy Monolith
+              Pod 1               Pod 2
+               v1                  v2
+                 \                 /
+                  \               /
+                   Kubernetes
+                    Cluster
